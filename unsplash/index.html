@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Generator</title>
+    <link href="https://fonts.googleapis.com/css?family=Jura:300,700" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,7 +28,7 @@
         #bg-front { z-index: 1; opacity: 0; }
 
         body {
-            font-family: system-ui, sans-serif;
+            font-family: 'Jura', system-ui, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -39,29 +40,157 @@
         .container {
             position: relative;
             z-index: 2;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(12px);
+            zoom: 0.85;
+            background: rgba(255,255,255,0.28);
+            backdrop-filter: blur(10px);
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 4px 24px rgba(0,0,0,0.1);
             text-align: center;
             max-width: 400px;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.25rem;
         }
 
         h1 { margin-bottom: 1.5rem; color: #333; }
         .form-group { margin-bottom: 1rem; }
         input[type="text"] { width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; }
         input[type="text"]:focus { outline: none; border-color: #3b82f6; }
-        #qr-box { margin: 1.5rem auto; padding: 1rem; background: white; border: 2px dashed #e0e0e0; border-radius: 8px; min-height: 128px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        #qr-box.has-qr { border-style: solid; }
+        #qr-box {
+            position: relative;
+            padding: 1.25rem;
+            border-radius: 12px;
+            min-height: 168px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+            box-sizing: border-box;
+            width: 100%;
+        }
         #qr-svg { transition: opacity 300ms ease-in-out; width: 100%; }
         #qr-svg svg { width: 100%; height: auto; max-height: 70vh; }
         #qr-svg.hidden { opacity: 0; }
+        .control-box {
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+            box-sizing: border-box;
+            width: 100%;
+        }
+        .control-box input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 14px;
+            border-radius: 999px;
+            background:
+                linear-gradient(to right, #3b82f6 var(--fill, 0%), #e0e0e0 var(--fill, 0%));
+            outline: none;
+            cursor: pointer;
+            margin: 0;
+            border: none;
+            padding: 0;
+        }
+        .control-box input[type="range"]::-webkit-slider-runnable-track {
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 999px;
+            background:
+                repeating-linear-gradient(to right,
+                    transparent 0,
+                    transparent calc(10% - 2px),
+                    #b0b0b0 calc(10% - 2px),
+                    #b0b0b0 10%);
+        }
+        .control-box input[type="range"]::-moz-range-track {
+            height: 6px;
+            border-radius: 999px;
+            background:
+                repeating-linear-gradient(to right,
+                    transparent 0,
+                    transparent calc(10% - 2px),
+                    #b0b0b0 calc(10% - 2px),
+                    #b0b0b0 10%);
+        }
+        .control-box input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            margin-top: -7px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 3px solid #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+            cursor: grab;
+        }
+        .control-box input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            border: 3px solid #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+            cursor: grab;
+        }
+        .slider-ticks {
+            position: relative;
+            height: 18px;
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: #888;
+        }
+        .slider-ticks span {
+            position: absolute;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+        .custom-title {
+            display: block;
+            margin-bottom: 0.5rem;
+            margin-top: 1rem;
+            font-size: 0.95rem;
+            color: #333;
+            font-weight: 700;
+        }
+        .custom-row {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .custom-row input[type="text"] {
+            width: 90px;
+            padding: 0.5rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Jura', system-ui, sans-serif;
+            font-weight: 700;
+            text-align: center;
+        }
+        .custom-row input[type="text"]:focus { outline: none; border-color: #3b82f6; }
+        .btn-sm {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .btn-sm:hover { background: #2563eb; }
         .btn { background: #3b82f6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-size: 1rem; cursor: pointer; }
         .btn:hover { background: #2563eb; }
-        .hint { color: #888; font-size: 0.85rem; margin-top: 0.5rem; }
-        .ecl-label { color: #888; font-size: 0.8rem; margin-top: 0.4rem; }
+        .empty-hint { color: rgba(51,51,51,0.6); font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -71,17 +200,18 @@
     </div>
 
     <div class="container">
-        <h1>QR Code Generator</h1>
-
-        <form id="qr-form">
-            <div class="form-group">
-                <input type="text" id="qr-input" placeholder="Enter text or URL..." autofocus>
-            </div>
-            <button type="submit" class="btn">Generate QR</button>
-        </form>
-
         <div id="qr-box">
-            <p class="hint">Your QR code will appear here</p>
+        </div>
+
+        <div class="control-box">
+            <input type="range" id="qr-slider" min="0" max="500" value="0" step="1">
+            <div class="slider-ticks" id="slider-ticks"></div>
+
+            <div class="custom-title" for="custom-input">Или выбрать размер Donate</div>
+            <div class="custom-row">
+                <input type="text" id="custom-input" inputmode="numeric" autocomplete="off">
+                <button type="button" class="btn-sm" id="custom-ok">OK</button>
+            </div>
         </div>
     </div>
 
@@ -120,8 +250,6 @@
 
         fetchNextBg();
 
-        var form = document.getElementById('qr-form');
-        var input = document.getElementById('qr-input');
         var box = document.getElementById('qr-box');
 
         var ECL = ['L', 'M', 'Q', 'H'];
@@ -132,7 +260,6 @@
         var idx = 0;
         var cycleTimer = null;
         var countdownTimer = null;
-        var text = '';
 
         var SVG_NS = 'http://www.w3.org/2000/svg';
 
@@ -167,7 +294,6 @@
             addCountdown(svgNode);
 
             var wrapper = box.querySelector('#qr-svg');
-            var lbl = box.querySelector('.ecl-label');
 
             if (!wrapper) {
                 wrapper = document.createElement('div');
@@ -177,13 +303,6 @@
             }
             wrapper.innerHTML = '';
             wrapper.appendChild(svgNode);
-
-            if (!lbl) {
-                lbl = document.createElement('div');
-                lbl.className = 'ecl-label';
-                box.appendChild(lbl);
-            }
-            lbl.textContent = 'ECL: ' + ecl;
         }
 
         function cycle() {
@@ -222,25 +341,62 @@
             if (countdownTimer) { clearTimeout(countdownTimer); countdownTimer = null; }
         }
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            var val = input.value.trim();
-            if (!val) return;
-
-            text = val;
-            idx = 0;
-            stopCycle();
-            box.classList.add('has-qr');
-
-            var wrapper = box.querySelector('#qr-svg');
-            if (wrapper) {
-                wrapper.style.transition = 'none';
-                wrapper.classList.add('hidden');
-                void wrapper.offsetHeight;
-                wrapper.style.transition = '';
-            }
-
+        var params = new URLSearchParams(window.location.search);
+        var text = params.get('qrsid') || '';
+        if (text) {
             cycle();
+        } else {
+            var hint = document.createElement('p');
+            hint.className = 'empty-hint';
+            hint.textContent = 'QR-код появится при передаче параметра qrsid';
+            box.appendChild(hint);
+        }
+
+        var slider = document.getElementById('qr-slider');
+        var ticks = document.getElementById('slider-ticks');
+        var customInput = document.getElementById('custom-input');
+        var customOk = document.getElementById('custom-ok');
+
+        var TICK_VALUES = [0, 50, 100, 150, 200, 250, 300, 350, 400, 450, 500];
+        var TICK_STEP = 50;
+        var sliderMax = parseFloat(slider.max) || 500;
+        TICK_VALUES.forEach(function(v) {
+            var s = document.createElement('span');
+            s.textContent = v;
+            s.style.left = ((v / sliderMax) * 100) + '%';
+            ticks.appendChild(s);
+        });
+
+        function snapToTick(v) {
+            var n = Math.round(v / TICK_STEP) * TICK_STEP;
+            if (n < 0) n = 0;
+            if (n > sliderMax) n = sliderMax;
+            return n;
+        }
+
+        function updateSlider() {
+            var fill = ((parseFloat(slider.value) - parseFloat(slider.min)) / (parseFloat(slider.max) - parseFloat(slider.min))) * 100;
+            slider.style.setProperty('--fill', fill + '%');
+            customInput.value = slider.value + ' руб.';
+        }
+        slider.addEventListener('input', function() {
+            slider.value = snapToTick(slider.value);
+            updateSlider();
+        });
+        updateSlider();
+
+        function applyCustom() {
+            var v = parseInt(customInput.value, 10);
+            if (isNaN(v)) return;
+            if (v < 0) v = 0;
+            if (v > 500) v = 500;
+            v = snapToTick(v);
+            slider.value = v;
+            updateSlider();
+        }
+        customOk.addEventListener('click', applyCustom);
+        customInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') applyCustom();
         });
     </script>
 </body>
