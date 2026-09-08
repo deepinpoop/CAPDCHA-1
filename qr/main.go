@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const unsplashAccessKey = "cjjFLji7SSrb6iQ01Et3Z9iHFq9CmSosMQkl1lK3Ha4"
+const unsplashAccessKey = "ajjFLji7SSrb6iQ01Et3Z9iHFq9CmSosMQkl1lK3Ha4"
 
 func nextBackgroundHandler(w http.ResponseWriter, r *http.Request) {
 	url := "https://api.unsplash.com/photos/random?query=nature&orientation=landscape"
